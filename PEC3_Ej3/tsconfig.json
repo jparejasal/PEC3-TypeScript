@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    /* Basic Options */
+    "target": "es2015",                 // Configura la versión del lenguaje JavaScript para JavaScript emitido e incluye declaraciones de biblioteca compatibles. 
+    "module": "commonjs",               // Especifica el código de módulo que se debe generar. 
+    "outDir": "./dist",                 // Especifica una carpeta de salida para todos los archivos emitidos.   
+    "rootDir": "./src",                 // Especifica la carpeta raíz dentro de sus archivos fuente. 
+    "strict": true,                     // Habilita todas las opciones estrictas de verificación de tipos.
+    "incremental": true,                // Le indica a TypeScript que guarde información sobre el gráfico del proyecto desde la última compilación en archivos almacenados en el disco.
+    "tsBuildInfoFile": "./buildcache",  // Permite especificar un archivo para almacenar información de compilación incremental como parte de proyectos compuestos, lo que permite una creación más rápida de bases de código TypeScript más grandes.
+  }
+}

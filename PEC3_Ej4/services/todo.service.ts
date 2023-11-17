@@ -1,74 +1,52 @@
-/**
- * @class Service
- *
- * Manages the data of the application.
- */
+import { Todo } from '../models/todo.model';
 
 
-class Todo {
-  id: string;
-  text: string;
-  complete: boolean;
-
-  constructor({ id, text, complete }) {
-    this.id = id;
-    this.text = text;
-    this.complete = complete;
-  }
-}
+type TodoListChangedCallback = (todos: Todo[]) => void;
 
 class TodoService {
-  todos: Todo[];
+  public todos: Todo[];
+  private onTodoListChanged?: TodoListChangedCallback;
 
   constructor() {
-    this.todos = (JSON.parse(localStorage.getItem("todos")) || []).map(
-      todo => new Todo(todo)
+    const todosJSON = localStorage.getItem('todos');
+    this.todos = (todosJSON ? JSON.parse(todosJSON) : []).map(
+      (todo: { text: string; complete: boolean; id?: string }) => new Todo(todo)
     );
   }
 
-  bindTodoListChanged(callback: (todos: Todo[]) => void) {
+  public bindTodoListChanged(callback: TodoListChangedCallback): void {
     this.onTodoListChanged = callback;
   }
 
-  onTodoListChanged(todos: Todo[]) {
-    // implementation
+  private _commit(todos: Todo[]): void {
+    this.onTodoListChanged?.(todos);
+    localStorage.setItem('todos', JSON.stringify(todos));
   }
 
-  _commit(todos: Todo[]) {
-    this.onTodoListChanged(todos);
-    localStorage.setItem("todos", JSON.stringify(todos));
-  }
-
-  addTodo(text: string) {
+  public addTodo(text: string): void {
     this.todos.push(new Todo({ text }));
-
     this._commit(this.todos);
   }
 
-  editTodo(id: string, updatedText: string) {
+  public editTodo(id: string, updatedText: string): void {
     this.todos = this.todos.map(todo =>
-      todo.id === id
-        ? new Todo({
-            ...todo,
-            text: updatedText
-          })
-        : todo
+      todo.id === id ? new Todo({ ...todo, text: updatedText }) : todo
     );
-
     this._commit(this.todos);
   }
 
-  deleteTodo(_id: string) {
-    this.todos = this.todos.filter(({ id }) => id !== _id);
-
+  public deleteTodo(id: string): void {
+    this.todos = this.todos.filter(todo => todo.id !== id);
     this._commit(this.todos);
   }
 
-  toggleTodo(_id: string) {
+  public toggleTodo(id: string): void {
     this.todos = this.todos.map(todo =>
-      todo.id === _id ? new Todo({ ...todo, complete: !todo.complete }) : todo
+      todo.id === id ? new Todo({ ...todo, complete: !todo.complete }) : todo
     );
-
     this._commit(this.todos);
   }
 }
+
+export { TodoService };
+

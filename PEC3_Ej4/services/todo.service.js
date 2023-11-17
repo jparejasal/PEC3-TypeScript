@@ -9,21 +9,19 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-/**
- * @class Service
- *
- * Manages the data of the application.
- */
+import { Todo } from '../models/todo.model.js';
 var TodoService = /** @class */ (function () {
     function TodoService() {
-        this.todos = (JSON.parse(localStorage.getItem("todos")) || []).map(function (todo) { return new Todo(todo); });
+        var todosJSON = localStorage.getItem('todos');
+        this.todos = (todosJSON ? JSON.parse(todosJSON) : []).map(function (todo) { return new Todo(todo); });
     }
     TodoService.prototype.bindTodoListChanged = function (callback) {
         this.onTodoListChanged = callback;
     };
     TodoService.prototype._commit = function (todos) {
-        this.onTodoListChanged(todos);
-        localStorage.setItem("todos", JSON.stringify(todos));
+        var _a;
+        (_a = this.onTodoListChanged) === null || _a === void 0 ? void 0 : _a.call(this, todos);
+        localStorage.setItem('todos', JSON.stringify(todos));
     };
     TodoService.prototype.addTodo = function (text) {
         this.todos.push(new Todo({ text: text }));
@@ -31,24 +29,20 @@ var TodoService = /** @class */ (function () {
     };
     TodoService.prototype.editTodo = function (id, updatedText) {
         this.todos = this.todos.map(function (todo) {
-            return todo.id === id
-                ? new Todo(__assign(__assign({}, todo), { text: updatedText }))
-                : todo;
+            return todo.id === id ? new Todo(__assign(__assign({}, todo), { text: updatedText })) : todo;
         });
         this._commit(this.todos);
     };
-    TodoService.prototype.deleteTodo = function (_id) {
-        this.todos = this.todos.filter(function (_a) {
-            var id = _a.id;
-            return id !== _id;
-        });
+    TodoService.prototype.deleteTodo = function (id) {
+        this.todos = this.todos.filter(function (todo) { return todo.id !== id; });
         this._commit(this.todos);
     };
-    TodoService.prototype.toggleTodo = function (_id) {
+    TodoService.prototype.toggleTodo = function (id) {
         this.todos = this.todos.map(function (todo) {
-            return todo.id === _id ? new Todo(__assign(__assign({}, todo), { complete: !todo.complete })) : todo;
+            return todo.id === id ? new Todo(__assign(__assign({}, todo), { complete: !todo.complete })) : todo;
         });
         this._commit(this.todos);
     };
     return TodoService;
 }());
+export { TodoService };

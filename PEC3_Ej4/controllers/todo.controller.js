@@ -1,11 +1,3 @@
-/**
- * @class Controller
- *
- * Links the user input and the view output.
- *
- * @param model
- * @param view
- */
 var TodoController = /** @class */ (function () {
     function TodoController(service, view) {
         var _this = this;
@@ -37,3 +29,4 @@ var TodoController = /** @class */ (function () {
     }
     return TodoController;
 }());
+export { TodoController };

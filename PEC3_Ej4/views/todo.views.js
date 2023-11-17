@@ -1,8 +1,3 @@
-/**
- * @class View
- *
- * Visual representation of the model.
- */
 var TodoView = /** @class */ (function () {
     function TodoView() {
         this.app = this.getElement("#root");
@@ -39,6 +34,8 @@ var TodoView = /** @class */ (function () {
     };
     TodoView.prototype.getElement = function (selector) {
         var element = document.querySelector(selector);
+        if (!element)
+            throw new Error("Element not found for selector: ".concat(selector));
         return element;
     };
     TodoView.prototype.displayTodos = function (todos) {
@@ -62,7 +59,7 @@ var TodoView = /** @class */ (function () {
                 checkbox.type = "checkbox";
                 checkbox.checked = todo.complete;
                 var span = _this.createElement("span");
-                span.contentEditable = true;
+                span.contentEditable = "true";
                 span.classList.add("editable");
                 if (todo.complete) {
                     var strike = _this.createElement("s");
@@ -85,8 +82,9 @@ var TodoView = /** @class */ (function () {
     TodoView.prototype._initLocalListeners = function () {
         var _this = this;
         this.todoList.addEventListener("input", function (event) {
-            if (event.target.className === "editable") {
-                _this._temporaryTodoText = event.target.innerText;
+            var target = event.target;
+            if (target.className === "editable") {
+                _this._temporaryTodoText = target.innerText;
             }
         });
     };
@@ -102,8 +100,9 @@ var TodoView = /** @class */ (function () {
     };
     TodoView.prototype.bindDeleteTodo = function (handler) {
         this.todoList.addEventListener("click", function (event) {
-            if (event.target.className === "delete") {
-                var id = event.target.parentElement.id;
+            var target = event.target;
+            if (target.className === "delete") {
+                var id = target.parentElement.id;
                 handler(id);
             }
         });
@@ -111,8 +110,9 @@ var TodoView = /** @class */ (function () {
     TodoView.prototype.bindEditTodo = function (handler) {
         var _this = this;
         this.todoList.addEventListener("focusout", function (event) {
-            if (_this._temporaryTodoText) {
-                var id = event.target.parentElement.id;
+            var target = event.target;
+            if (_this._temporaryTodoText && target.className === "editable") {
+                var id = target.parentElement.id;
                 handler(id, _this._temporaryTodoText);
                 _this._temporaryTodoText = "";
             }
@@ -120,11 +120,13 @@ var TodoView = /** @class */ (function () {
     };
     TodoView.prototype.bindToggleTodo = function (handler) {
         this.todoList.addEventListener("change", function (event) {
-            if (event.target.type === "checkbox") {
-                var id = event.target.parentElement.id;
+            var target = event.target;
+            if (target.type === "checkbox") {
+                var id = target.parentElement.id;
                 handler(id);
             }
         });
     };
     return TodoView;
 }());
+export { TodoView };
